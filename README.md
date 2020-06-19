@@ -1,17 +1,17 @@
 The environment file should look like the following example:
 
-ROUTE=/bigfinite
-DOCS=/bigfinite/docs
+ROUTE=/assessment
+DOCS=/assessment/docs
 ENVIRONMENT=PT
 HOST=localhost
 PORT=80
 
-MONGO_HOST=localhost
-MONGO_PORT=27017
-MONGO_DB=bigfinite
 LOG_LEVEL=debug
 
 SECRET=test
+
+CLIENT_URL=http://www.mocky.io/v2/5808862710000087232b75ac
+POLICIES_URL=http://www.mocky.io/v2/580891a4100000e8242b75c5
 
 ## To run
 
