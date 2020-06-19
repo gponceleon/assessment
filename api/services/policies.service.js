@@ -2,13 +2,15 @@ const logger = require('../common/logger');
 const servHelper = require('../helpers/services.helper');
 const HttpError = require('../helpers/httpError');
 const { CREATED, NO_CONTENT, OK } = require('../helpers/httpResponses');
-const { INVALID_DATA, NOT_FOUND, USER_NOT_FOUND } = require('../helpers/errorCodes');
+const { INVALID_DATA, NOT_FOUND, USER_NOT_FOUND, AUTHORIZATION_FAILURE } = require('../helpers/errorCodes');
 
 class Policies {
     getPoliciesByUsername(req) {
         return new Promise(async (resolve, reject) => {
             try {
-                const { username } = req.query;
+                const { user, query: { username } } = req;
+
+                if (user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
 
                 const clientData = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
                 const client = servHelper.findData(clientData.clients, "email", username);
@@ -38,7 +40,9 @@ class Policies {
     getPoliciesById(req) {
         return new Promise(async (resolve, reject) => {
             try {
-                const { policyId } = req.params;
+                const { user, params: { policyId } } = req;
+                
+                if (user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
 
                 const data = await servHelper.getDatafromThirdAPI(process.env.POLICIES_URL);
 
