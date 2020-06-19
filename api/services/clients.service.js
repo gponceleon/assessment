@@ -8,7 +8,9 @@ class Clients {
     getClientById(req) {
         return new Promise(async (resolve, reject) => {
             try {
-                const { userId } = req.params;
+                const { user, params: { userId } } = req;
+
+                if (user.role !== 'users' && user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
 
                 const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
 
@@ -34,7 +36,9 @@ class Clients {
     getClientByName(req) {
         return new Promise(async (resolve, reject) => {
             try {
-                const { username } = req.query;
+                const { user, query: { username } } = req;
+                
+                if (user.role !== 'users' && user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
 
                 const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
 
