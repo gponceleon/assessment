@@ -11,14 +11,19 @@ if (fs.existsSync('./.env')) {
     require('dotenv').config();
 }
 
+/* Import middlewares */
+const authentication = require('./api/middlewares/authentication.middleware.js');
 
 const config = {
     appRoot: __dirname,
 };
 
+/* Set authentication */
+passport.use(authentication);
 
 require('./routes/clients.routes')(app, express);
 require('./routes/policies.routes')(app, express);
+require('./routes/user.routes')(app, express);
 
 module.exports = app; // for testing
 

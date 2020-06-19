@@ -59,6 +59,9 @@ describe('Tests in PoliciesService', () => {
             };
 
             this.req = {
+                user: {
+                    role: 'admin'
+                },
                 params: {
                     policyId: "1"
                 }
@@ -192,6 +195,9 @@ describe('Tests in PoliciesService', () => {
                     .onCall(1).returns([{}])
             }
             this.req = {
+                user: {
+                    role: 'admin'
+                },
                 query: {
                     username: "pperez"
                 }
