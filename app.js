@@ -18,6 +18,8 @@ const config = {
 
 
 require('./routes/clients.routes')(app, express);
+require('./routes/policies.routes')(app, express);
+
 module.exports = app; // for testing
 
 const port = process.env.PORT || 80;

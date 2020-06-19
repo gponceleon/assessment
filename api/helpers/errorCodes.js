@@ -59,5 +59,4 @@ module.exports = {
         code: 12,
         httpCode: 500
     }
-
 }
