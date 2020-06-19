@@ -42,7 +42,7 @@ class Clients {
 
                 const client = servHelper.findAllData(data.clients, 'email', username);
 
-                const label = !client ? NO_CONTENT : OK;
+                const label = !client.length ? NO_CONTENT : OK;
 
                 resolve({
                     statusCode: label.statusCode,
