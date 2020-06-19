@@ -46,6 +46,8 @@ class Policies {
 
                 const policy = servHelper.findData(data.policies, "id", policyId);
 
+                if (!policy) throw new HttpError(NOT_FOUND);
+
                 const clientData = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
                 const clients = servHelper.findAllData(clientData.clients, "email", policy.email);
 

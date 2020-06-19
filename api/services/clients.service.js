@@ -1,8 +1,8 @@
 const logger = require('../common/logger');
 const servHelper = require('../helpers/services.helper');
 const HttpError = require('../helpers/httpError');
-const { CREATED, NO_CONTENT, OK } = require('../helpers/httpResponses');
-const { INVALID_DATA, NOT_FOUND } = require('../helpers/errorCodes');
+const { NO_CONTENT, OK } = require('../helpers/httpResponses');
+const { NOT_FOUND } = require('../helpers/errorCodes');
 
 class Clients {
     getClientById(req) {
