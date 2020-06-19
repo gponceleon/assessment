@@ -29,7 +29,7 @@ class ServiceHelper {
             const response = await needle('get', url);
             return response.body;
         } catch (error) {
-            logger.error(`Error in createSolutions for: ${error.message}`);
+            logger.error(`Error in getDatafromThirdAPI for: ${error.message}`);
             this.manageError(error);
         }
     }
@@ -45,7 +45,23 @@ class ServiceHelper {
             const element = array.find(value => value[label] === key);
             return element;
         } catch (error) {
-            logger.error(`Error in createSolutions for: ${error.message}`);
+            logger.error(`Error in findData for: ${error.message}`);
+            this.manageError(error);
+        }
+    }
+
+    /**
+    * Find all data that contains the key
+    * @param {Array} array Array to search
+    * @param {String} label Label to search inside the array
+    * @param {String} key Value to search
+    */
+    findAllData(array, label, key) {
+        try {
+            const element = array.filter(value => value[label].toString().includes(key));
+            return element;
+        } catch (error) {
+            logger.error(`Error in findAllData for: ${error.message}`);
             this.manageError(error);
         }
     }
