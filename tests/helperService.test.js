@@ -30,4 +30,32 @@ describe('Tests in services.helper', () => {
             expect(errorToReturn.httpCode).toBe(404);
         });
     });
+
+    describe('Test in findData', () => {
+        test('Exists the element', () => {
+            const array = [{value: 'X'}, {value: 'Y'}];
+            const elem = serviceHelper.findData(array, 'value', 'X');
+            expect(elem).toMatchObject({value:'X'})
+        });
+
+        test('Not exist the element', () => {
+            const array = [{value: 'X'}, {value: 'Y'}];
+            const elem = serviceHelper.findData(array, 'value', 'Z');
+            expect(elem).toBeUndefined();
+        });
+    });
+
+    describe('Test in findAllData', () => {
+        test('Exists the elements', () => {
+            const array = [{value: 'X', value2: 'Z'}, {value: 'Y', value2: 'Z'}];
+            const elem = serviceHelper.findAllData(array, 'value2', 'Z');
+            expect(elem.length).toBe(2)
+        });
+
+        test('Not exist the element', () => {
+            const array = [{value: 'X', value2: 'Z'}, {value: 'Y', value2: 'Z'}];
+            const elem = serviceHelper.findAllData(array, 'value', 'O');
+            expect(elem.length).toBe(0)
+        });
+    });
 });
