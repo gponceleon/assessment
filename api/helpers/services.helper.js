@@ -58,7 +58,7 @@ class ServiceHelper {
     */
     findAllData(array, label, key) {
         try {
-            const element = array.filter(value => value[label].toString().includes(key));
+            const element = array.filter(value => value[label].includes(key));
             return element;
         } catch (error) {
             logger.error(`Error in findAllData for: ${error.message}`);
