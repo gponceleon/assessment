@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const passport = require('passport');
-
+const logger = require('./api/common/logger');
 
 const fs = require('fs');
 
@@ -13,10 +13,6 @@ if (fs.existsSync('./.env')) {
 
 /* Import middlewares */
 const authentication = require('./api/middlewares/authentication.middleware.js');
-
-const config = {
-    appRoot: __dirname,
-};
 
 /* Set authentication */
 passport.use(authentication);
@@ -31,6 +27,6 @@ const port = process.env.PORT || 80;
 const host = process.env.HOST || 'localhost';
 
 app.listen(port, () => {
-    console.log(`Api is running on http://${host}:${port}`);
+    logger.info(`Api is running on http://${host}:${port}`);
 })
 

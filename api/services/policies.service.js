@@ -1,72 +1,67 @@
 const logger = require('../common/logger');
 const servHelper = require('../helpers/services.helper');
 const HttpError = require('../helpers/httpError');
-const { CREATED, NO_CONTENT, OK } = require('../helpers/httpResponses');
-const { INVALID_DATA, NOT_FOUND, USER_NOT_FOUND, AUTHORIZATION_FAILURE } = require('../helpers/errorCodes');
+const { NO_CONTENT, OK } = require('../helpers/httpResponses');
+const { NOT_FOUND, USER_NOT_FOUND } = require('../helpers/errorCodes');
 
 class Policies {
-    getPoliciesByUsername(req) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const { user, query: { username } } = req;
+    async getPoliciesByUsername(req) {
+        try {
+            const { query: { username } } = req;
 
-                if (user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
+            const clientData = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
+            const client = servHelper.findData(clientData.clients, "email", username);
 
-                const clientData = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
-                const client = servHelper.findData(clientData.clients, "email", username);
+            if (!client) throw new HttpError(USER_NOT_FOUND);
 
-                if (!client) throw new HttpError(USER_NOT_FOUND);
+            const data = await servHelper.getDatafromThirdAPI(process.env.POLICIES_URL);
 
-                const data = await servHelper.getDatafromThirdAPI(process.env.POLICIES_URL);
+            if (!data.policies.length) throw new HttpError(NOT_FOUND);
 
-                if (!data.policies.length) throw new HttpError(NOT_FOUND);
+            const policies = servHelper.findAllData(data.policies, "email", username);
+            const label = !policies.length ? NO_CONTENT : OK;
 
-                const policies = servHelper.findAllData(data.policies, "email", username);
-                const label = !policies.length ? NO_CONTENT : OK;
+            return {
+                statusCode: label.statusCode,
+                message: label.message,
+                data: policies
+            };
 
-                resolve({
-                    statusCode: label.statusCode,
-                    message: label.message,
-                    data: policies
-                });
+        } catch (error) {
+            logger.error(`Error in getPoliciesByUsername for: ${error.message}`);
+            throw servHelper.manageError(error);
+        }
 
-            } catch (error) {
-                logger.error(`Error in getPoliciesByUsername for: ${error.message}`);
-                reject(servHelper.manageError(error));
-            }
-        });
     }
 
-    getPoliciesById(req) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const { user, params: { policyId } } = req;
-                
-                if (user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
+    async getPoliciesById(req) {
 
-                const data = await servHelper.getDatafromThirdAPI(process.env.POLICIES_URL);
+        try {
+            const { params: { policyId } } = req;
 
-                if (!data.policies.length) throw new HttpError(NOT_FOUND);
+            const data = await servHelper.getDatafromThirdAPI(process.env.POLICIES_URL);
 
-                const policy = servHelper.findData(data.policies, "id", policyId);
+            if (!data.policies.length) throw new HttpError(NOT_FOUND);
 
-                if (!policy) throw new HttpError(NOT_FOUND);
+            const policy = servHelper.findData(data.policies, "id", policyId);
 
-                const clientData = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
-                const clients = servHelper.findAllData(clientData.clients, "email", policy.email);
+            if (!policy) throw new HttpError(NOT_FOUND);
 
-                const label = !clients.length ? NO_CONTENT : OK;
+            const clientData = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
+            const clients = servHelper.findAllData(clientData.clients, "email", policy.email);
 
-                resolve({
-                    statusCode: label.statusCode,
-                    message: label.message,
-                    data: clients
-                });
-            } catch (error) {
-                logger.error(`Error in getPoliciesByUsername for: ${error.message}`);
-                reject(servHelper.manageError(error));
+            const label = !clients.length ? NO_CONTENT : OK;
+
+            return {
+                statusCode: label.statusCode,
+                message: label.message,
+                data: clients
             }
-        })
+                ;
+        } catch (error) {
+            logger.error(`Error in getPoliciesByUsername for: ${error.message}`);
+            throw servHelper.manageError(error);
+        }
     }
 }
 

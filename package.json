@@ -1,7 +1,7 @@
 {
   "name": "bigfinitetes",
   "version": "1.0.0",
-  "description": "Tests para bigfinite",
+  "description": "Assessment Test",
   "main": "app.js",
   "scripts": {
     "start": "node --inspect=0.0.0.0:9229 app.js",

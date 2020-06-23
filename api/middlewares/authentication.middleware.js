@@ -1,4 +1,5 @@
 const { ExtractJwt, Strategy } = require('passport-jwt');
+const logger = require('../common/logger')
 
 const userService = require('../services/users.service');
 
@@ -12,12 +13,11 @@ module.exports = new Strategy(options, function ({ id }, done) {
 
     userService.getUserById(id)
         .then(user => {
-            console.log(user)
             user && done(null, { ...user, id });
             !user && done(null, null);
         })
         .catch(error => {
-            console.error(error);
+            logger.error(error.message);
             done(null, null);
         })
         ;

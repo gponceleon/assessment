@@ -5,60 +5,55 @@ const { NO_CONTENT, OK } = require('../helpers/httpResponses');
 const { NOT_FOUND } = require('../helpers/errorCodes');
 
 class Clients {
-    getClientById(req) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const { user, params: { userId } } = req;
+    async getClientById(req) {
 
-                if (user.role !== 'users' && user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
+        try {
+            const { params: { userId } } = req;
 
-                const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
+            const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
 
-                if (!data.clients.length) throw new HttpError(NOT_FOUND);
+            if (!data.clients.length) throw new HttpError(NOT_FOUND);
 
-                const client = servHelper.findData(data.clients, 'id', userId);
+            const client = servHelper.findData(data.clients, 'id', userId);
 
-                const label = !client ? NO_CONTENT : OK;
+            const label = !client ? NO_CONTENT : OK;
 
-                resolve({
-                    statusCode: label.statusCode,
-                    message: label.message,
-                    data: client
-                });
+            return {
+                statusCode: label.statusCode,
+                message: label.message,
+                data: client
+            };
 
-            } catch (error) {
-                logger.error(`Error in getClientById for: ${error.message}`);
-                reject(servHelper.manageError(error));
-            }
-        });
+        } catch (error) {
+            logger.error(`Error in getClientById for: ${error.message}`);
+            throw servHelper.manageError(error);
+        }
+
     }
 
-    getClientByName(req) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const { user, query: { username } } = req;
-                
-                if (user.role !== 'users' && user.role !== 'admin') throw new HttpError(AUTHORIZATION_FAILURE);
+    async getClientByName(req) {
 
-                const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
+        try {
+            const { query: { username } } = req;
 
-                if (!data.clients.length) throw new HttpError(NOT_FOUND);
+            const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
 
-                const client = servHelper.findAllData(data.clients, 'email', username);
+            if (!data.clients.length) throw new HttpError(NOT_FOUND);
 
-                const label = !client.length ? NO_CONTENT : OK;
+            const client = servHelper.findAllData(data.clients, 'email', username);
 
-                resolve({
-                    statusCode: label.statusCode,
-                    message: label.message,
-                    data: client
-                });
+            const label = !client.length ? NO_CONTENT : OK;
 
-            } catch (error) {
-                logger.error(`Error in getClientById for: ${error.message}`);
-                reject(servHelper.manageError(error));
-            }
-        });
+            return {
+                statusCode: label.statusCode,
+                message: label.message,
+                data: client
+            };
+
+        } catch (error) {
+            logger.error(`Error in getClientById for: ${error.message}`);
+            throw servHelper.manageError(error);
+        }
     }
 }
 
