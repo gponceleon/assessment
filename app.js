@@ -1,4 +1,5 @@
 const express = require('express');
+
 const app = express();
 const passport = require('passport');
 const logger = require('./api/common/logger');
@@ -8,7 +9,7 @@ const fs = require('fs');
 require('./config/express')(app);
 
 if (fs.existsSync('./.env')) {
-    require('dotenv').config();
+  require('dotenv').config();
 }
 
 /* Import middlewares */
@@ -27,6 +28,6 @@ const port = process.env.PORT || 80;
 const host = process.env.HOST || 'localhost';
 
 app.listen(port, () => {
-    logger.info(`Api is running on http://${host}:${port}`);
-})
+  logger.info(`Api is running on http://${host}:${port}`);
+});
 

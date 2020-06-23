@@ -1,4 +1,4 @@
-/** Componente de LOG envía a Consola para ser recolectado por driver Docker 
+/** Componente de LOG envía a Consola para ser recolectado por driver Docker
 */
 const winston = require('winston');
 const os = require('os');
@@ -6,9 +6,7 @@ const os = require('os');
 const { createLogger, format, transports } = winston;
 const { combine, timestamp, printf } = format;
 
-const myFormat = printf(info => {
-  return `${info.timestamp} [bigfinite] @${os.hostname()} ${info.level.padStart(6)}: ${info.message}`;
-});
+const myFormat = printf(info => `${info.timestamp} [bigfinite] @${os.hostname()} ${info.level.padStart(6)}: ${info.message}`);
 
 const logger = createLogger({
   format: combine(

@@ -5,56 +5,51 @@ const { NO_CONTENT, OK } = require('../helpers/httpResponses');
 const { NOT_FOUND } = require('../helpers/errorCodes');
 
 class Clients {
-    async getClientById(req) {
+  async getClientById(req) {
+    try {
+      const { params: { userId } } = req;
 
-        try {
-            const { params: { userId } } = req;
+      const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
 
-            const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
+      if (!data.clients.length) throw new HttpError(NOT_FOUND);
 
-            if (!data.clients.length) throw new HttpError(NOT_FOUND);
+      const client = servHelper.findData(data.clients, 'id', userId);
 
-            const client = servHelper.findData(data.clients, 'id', userId);
+      const label = !client ? NO_CONTENT : OK;
 
-            const label = !client ? NO_CONTENT : OK;
-
-            return {
-                statusCode: label.statusCode,
-                message: label.message,
-                data: client
-            };
-
-        } catch (error) {
-            logger.error(`Error in getClientById for: ${error.message}`);
-            throw servHelper.manageError(error);
-        }
-
+      return {
+        statusCode: label.statusCode,
+        message: label.message,
+        data: client,
+      };
+    } catch (error) {
+      logger.error(`Error in getClientById for: ${error.message}`);
+      throw servHelper.manageError(error);
     }
+  }
 
-    async getClientByName(req) {
+  async getClientByName(req) {
+    try {
+      const { query: { username } } = req;
 
-        try {
-            const { query: { username } } = req;
+      const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
 
-            const data = await servHelper.getDatafromThirdAPI(process.env.CLIENT_URL);
+      if (!data.clients.length) throw new HttpError(NOT_FOUND);
 
-            if (!data.clients.length) throw new HttpError(NOT_FOUND);
+      const client = servHelper.findAllData(data.clients, 'email', username);
 
-            const client = servHelper.findAllData(data.clients, 'email', username);
+      const label = !client.length ? NO_CONTENT : OK;
 
-            const label = !client.length ? NO_CONTENT : OK;
-
-            return {
-                statusCode: label.statusCode,
-                message: label.message,
-                data: client
-            };
-
-        } catch (error) {
-            logger.error(`Error in getClientById for: ${error.message}`);
-            throw servHelper.manageError(error);
-        }
+      return {
+        statusCode: label.statusCode,
+        message: label.message,
+        data: client,
+      };
+    } catch (error) {
+      logger.error(`Error in getClientById for: ${error.message}`);
+      throw servHelper.manageError(error);
     }
+  }
 }
 
 module.exports = new Clients();

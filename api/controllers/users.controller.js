@@ -1,26 +1,25 @@
 const userServices = require('../services/users.service');
 
 class UserController {
-    async login(req, res) {
-        try {
-            const response = await userServices.login(req);
+  async login(req, res) {
+    try {
+      const response = await userServices.login(req);
 
-            res.status(response.statusCode).send({
-                status: response.statusCode,
-                success: true,
-                message: response.message,
-                data: response.token
-            });
-
-        } catch (error) {
-            res.status(error.httpCode).send({
-                success: false,
-                message: error.message,
-            });
-        }
+      res.status(response.statusCode).send({
+        status: response.statusCode,
+        success: true,
+        message: response.message,
+        data: response.token,
+      });
+    } catch (error) {
+      res.status(error.httpCode).send({
+        success: false,
+        message: error.message,
+      });
     }
+  }
 
-    /*async signUp(req, res) {
+  /* async signUp(req, res) {
         try {
             const response = await userServices.signUp(req);
 
@@ -56,7 +55,7 @@ class UserController {
                 message: error.message,
             });
         }
-    }*/
+    } */
 }
 
 module.exports = new UserController();
